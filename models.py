@@ -87,9 +87,9 @@ class NearEarthObject:
         return f"NearEarthObject(designation={self.designation!r}, name={self.name!r}, " \
                f"diameter={self.diameter:.3f}, hazardous={self.hazardous!r})"
 
-    @fullname.setter
-    def fullname(self, name):
-        self.fullname = f'{name} {self.designation}'
+    # @fullname.setter
+    # def fullname(self, name):
+    #     self.fullname = f'{name} {self.designation}'
 
 
 class CloseApproach:
@@ -126,7 +126,7 @@ class CloseApproach:
         self.neo = neo
 
     @property
-    def time_str(self,time):
+    def time_str(self):
         """Return a formatted representation of this `CloseApproach`'s approach time.
 
         The value in `self.time` should be a Python `datetime` object. While a
@@ -148,7 +148,8 @@ class CloseApproach:
         # TODO: Use this object's attributes to return a human-readable string representation.
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
-        return f"A CloseApproach ..."
+        return f"CloseApproach(time={self.time_str}, distance={self.distance}, " \
+               f"velocity={self.velocity}, neo={self.neo})"
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
