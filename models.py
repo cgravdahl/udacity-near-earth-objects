@@ -118,7 +118,7 @@ class CloseApproach:
         # The `cd_to_datetime` function will be useful.
         self.id = id
         self._designation = designation
-        self.time = time # TODO: Use the cd_to_datetime function for this attribute.
+        self.time = cd_to_datetime(time) # TODO: Use the cd_to_datetime function for this attribute.
         self.distance = distance
         self.velocity = velocity
 
@@ -139,7 +139,7 @@ class CloseApproach:
         in serialization to CSV and JSON files.
         """
         # TODO: Use this object's `.time` attribute and the `datetime_to_str` function to
-        new_time = cd_to_datetime(self.time)
+        new_time = datetime_to_str(self.time)
         # TODO: Use self.designation and self.name to build a fullname for this object.
         return new_time
 
@@ -148,8 +148,8 @@ class CloseApproach:
         # TODO: Use this object's attributes to return a human-readable string representation.
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
-        return f"CloseApproach(time={self.time_str}, distance={self.distance}, " \
-               f"velocity={self.velocity}, neo={self.neo})"
+        return f"CloseApproach(time={self.time_str!r}, distance={self.distance}, " \
+               f"velocity={self.velocity}, neo={self.neo!r})"
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""

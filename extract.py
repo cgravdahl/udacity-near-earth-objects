@@ -24,15 +24,15 @@ def load_neos(neo_csv_path):
     :param neo_csv_path: A path to a CSV file containing data about near-Earth objects.
     :return: A collection of `NearEarthObject`s.
     """
-    neos = {}  # Map from code -> name
+    neos = []  # Map from code -> name
     with open(neo_csv_path) as x:
         reader = csv.reader(x)
         next(reader, None)
         for line in reader:
             if line[15]:
-                neos.update({line[0]: NearEarthObject(line[4], line[3], line[8], line[15])})
+                neos.append(NearEarthObject(line[4], line[3], line[8], line[15]))
             else:
-                neos.update({line[0]: NearEarthObject(line[4], line[3], line[8])})
+                neos.append(NearEarthObject(line[4], line[3], line[8]))
     return neos
 
 
