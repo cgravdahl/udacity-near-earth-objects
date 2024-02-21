@@ -34,7 +34,7 @@ class NearEarthObject:
     """
     # TODO: How can you, and should you, change the arguments to this constructor?
     # If you make changes, be sure to update the comments in this file.
-    def __init__(self,id,name = None,designation = '', diameter = float('nan'),hazardous = False):
+    def __init__(self, name=None, designation='', hazardous=False, diameter=float('nan')):
         """Create a new `NearEarthObject`.
 
         :param info: A dictionary of excess keyword arguments supplied to the constructor.
@@ -44,12 +44,10 @@ class NearEarthObject:
         # You should coerce these values to their appropriate data type and
         # handle any edge cases, such as a empty name being represented by `None`
         # and a missing diameter being represented by `float('nan')`.
-        self.id = id
         self.designation = designation
         self.name = name
-        self.diameter = diameter
+        self.diameter = float(diameter)
         self.hazardous = bool(hazardous)
-        # self.fullname = ''
 
         # Create an empty initial collection of linked approaches.
         self.approaches = []
@@ -58,24 +56,40 @@ class NearEarthObject:
     def fullname(self):
         """Return a representation of the full name of this NEO."""
         # TODO: Use self.designation and self.name to build a fullname for this object.
-        # self.fullname = f'{self.name} {self.designation}'
-        return print(f'{self.name} {self.designation}')
+
+        return f'{self.name} {self.designation}'
 
     def __str__(self):
         """Return `str(self)`."""
         # TODO: Use this object's attributes to return a human-readable string representation.
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
-        return f"A NearEarthObject named {self.name}, designation {self.designation}, diameter {self.diameter}, hazardous {self.hazardous}..."
+        name_string = ""
+        diam_string = ""
+        hazardous_string = ""
+        if self.name == " ":
+            name_string = "A NearEarthObject has no name"
+        else:
+            name_string = f'A NearEarthObject {self.fullname}'
+        if self.diameter == self.diameter:
+            diam_string = f'has a diameter of {self.diameter:.3f}'
+        else:
+            diam_string = "has an unknown diameter"
+        if self.hazardous:
+            hazardous_string = "is a hazardous object"
+        else:
+            hazardous_string = "is not a threat"
+
+        return f"{name_string}, has the designation of {self.designation}, {diam_string}, and {hazardous_string}"
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
         return f"NearEarthObject(designation={self.designation!r}, name={self.name!r}, " \
                f"diameter={self.diameter:.3f}, hazardous={self.hazardous!r})"
 
-    # @fullname.setter
-    # def fullname(self, value):
-    #     self._fullname = value
+    @fullname.setter
+    def fullname(self, name):
+        self.fullname = f'{name} {self.designation}'
 
 
 class CloseApproach:

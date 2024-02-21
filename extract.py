@@ -28,10 +28,13 @@ def load_neos(neo_csv_path):
     neos = {}  # Map from code -> name
     with open(neo_csv_path) as x:
         reader = csv.reader(x)
+        next(reader, None)
         for line in reader:
-            if line[16]:
-                print(NearEarthObject(line[1], line[4], line[3], line[16], line[8]))
-    return ()
+            if line[15]:
+                neos.update({line[0]: NearEarthObject(line[4], line[3], line[8], line[15])})
+            else:
+                neos.update({line[0]: NearEarthObject(line[4], line[3], line[8])})
+    return neos
 
 
 def load_approaches(cad_json_path):
