@@ -46,6 +46,7 @@ class NEODatabase:
 
         # TODO: Link together the NEOs and their close approaches.
 
+
     def get_neo_by_designation(self, designation):
         """Find and return an NEO by its primary designation.
 

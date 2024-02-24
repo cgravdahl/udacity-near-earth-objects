@@ -34,7 +34,7 @@ class NearEarthObject:
     """
     # TODO: How can you, and should you, change the arguments to this constructor?
     # If you make changes, be sure to update the comments in this file.
-    def __init__(self, name=None, designation='', hazardous=False, diameter=float('nan')):
+    def __init__(self,orbit_id, name=None, designation='', hazardous=False, diameter=float('nan')):
         """Create a new `NearEarthObject`.
 
         :param info: A dictionary of excess keyword arguments supplied to the constructor.
@@ -44,6 +44,7 @@ class NearEarthObject:
         # You should coerce these values to their appropriate data type and
         # handle any edge cases, such as a empty name being represented by `None`
         # and a missing diameter being represented by `float('nan')`.
+        self.orbit_id = orbit_id
         self.designation = designation
         self.name = name
         self.diameter = float(diameter)
@@ -80,12 +81,14 @@ class NearEarthObject:
         else:
             hazardous_string = "is not a threat"
 
-        return f"{name_string}, has the designation of {self.designation}, {diam_string}, and {hazardous_string}"
+        return f"{name_string}, has the designation of {self.designation}, {diam_string},"\
+               f"and {hazardous_string} with an orbital ID of {self.orbit_id}"
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
         return f"NearEarthObject(designation={self.designation!r}, name={self.name!r}, " \
                f"diameter={self.diameter:.3f}, hazardous={self.hazardous!r})"
+
 
     # @fullname.setter
     # def fullname(self, name):
@@ -116,7 +119,7 @@ class CloseApproach:
         # onto attributes named `_designation`, `time`, `distance`, and `velocity`.
         # You should coerce these values to their appropriate data type and handle any edge cases.
         # The `cd_to_datetime` function will be useful.
-        self.id = id
+        self.orbit_id = id
         self._designation = designation
         self.time = cd_to_datetime(time) # TODO: Use the cd_to_datetime function for this attribute.
         self.distance = distance
@@ -149,7 +152,7 @@ class CloseApproach:
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
         return f"CloseApproach(time={self.time_str!r}, distance={self.distance}, " \
-               f"velocity={self.velocity}, neo={self.neo!r})"
+               f"velocity={self.velocity}, neo={self.neo!r}), orbit_id={self.orbit_id}"
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""

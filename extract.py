@@ -30,9 +30,10 @@ def load_neos(neo_csv_path):
         next(reader, None)
         for line in reader:
             if line[15]:
-                neos.append(NearEarthObject(line[4], line[3], line[8], line[15]))
+                neos.append(NearEarthObject(line[27], line[4], line[3], line[8], line[15]))
             else:
-                neos.append(NearEarthObject(line[4], line[3], line[8]))
+                neos.append(NearEarthObject(line[27], line[4], line[3], line[8]))
+    print(neos[1])
     return neos
 
 
@@ -48,4 +49,5 @@ def load_approaches(cad_json_path):
         data = json.load(x)['data']
         for y in data:
             close_approaches.append(CloseApproach(y[1], y[0], y[3], y[4], y[7]))
-        return data
+        print(close_approaches[1])
+        return close_approaches
