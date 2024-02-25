@@ -11,7 +11,7 @@ data on NEOs and close approaches extracted by `extract.load_neos` and
 
 You'll edit this file in Tasks 2 and 3.
 """
-
+import functools
 
 class NEODatabase:
     """A database of near-Earth objects and their close approaches.
@@ -43,8 +43,39 @@ class NEODatabase:
         self._approaches = approaches
 
         # TODO: What additional auxiliary data structures will be useful?
+        def cache_approach(function):
+           function._cache = {}
+           @functools.wraps(function)
+           def wrapper(*args, **kwargs):
+               key = (args, tuple(kwargs.items()))
+               if key not in function._cache:
+                   # print(key)
+                   function._cache[key] = function(*args, **kwargs)
+               # print(function._cache[key])
+               return function._cache[key]
+           return wrapper
+
 
         # TODO: Link together the NEOs and their close approaches.
+        # @cache_approach
+        # def match_approaches(appraches):
+
+        # print(self._approaches[3].orbit_id)
+        @cache_approach
+        def check_approaches(approach,neo):
+            # print(neo.designation, approach._designation)
+            if neo.designation == approach._designation:
+                neo.approaches.append(approach)
+                approach.neo = neo.fullname
+                # print(neo, approach)
+        def set_approaches():
+            for neo in neos:
+                for approach in approaches:
+                    check_approaches(approach,neo)
+                # print(neo.orbit_id)
+                # get_approaches(neo)
+                # print(neo.name,neo.approaches)
+        set_approaches()
 
 
     def get_neo_by_designation(self, designation):

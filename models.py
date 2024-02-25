@@ -34,7 +34,7 @@ class NearEarthObject:
     """
     # TODO: How can you, and should you, change the arguments to this constructor?
     # If you make changes, be sure to update the comments in this file.
-    def __init__(self,orbit_id, name=None, designation='', hazardous=False, diameter=float('nan')):
+    def __init__(self, name, designation, hazardous, diameter):
         """Create a new `NearEarthObject`.
 
         :param info: A dictionary of excess keyword arguments supplied to the constructor.
@@ -44,11 +44,10 @@ class NearEarthObject:
         # You should coerce these values to their appropriate data type and
         # handle any edge cases, such as a empty name being represented by `None`
         # and a missing diameter being represented by `float('nan')`.
-        self.orbit_id = orbit_id
         self.designation = designation
-        self.name = name
-        self.diameter = float(diameter)
-        self.hazardous = bool(hazardous)
+        self.name = None if len(name) <= 0 else name
+        self.diameter = float('nan') if len(diameter) <= 0 else float(diameter)
+        self.hazardous = False if hazardous is 'N' or len(hazardous) <= 0 else True
 
         # Create an empty initial collection of linked approaches.
         self.approaches = []
@@ -110,7 +109,7 @@ class CloseApproach:
     """
     # TODO: How can you, and should you, change the arguments to this constructor?
     # If you make changes, be sure to update the comments in this file.
-    def __init__(self, id,designation,time,distance,velocity,neo = None):
+    def __init__(self, designation,time,distance,velocity,neo = None):
         """Create a new `CloseApproach`.
 
         :param info: A dictionary of excess keyword arguments supplied to the constructor.
@@ -119,11 +118,10 @@ class CloseApproach:
         # onto attributes named `_designation`, `time`, `distance`, and `velocity`.
         # You should coerce these values to their appropriate data type and handle any edge cases.
         # The `cd_to_datetime` function will be useful.
-        self.orbit_id = id
         self._designation = designation
         self.time = cd_to_datetime(time) # TODO: Use the cd_to_datetime function for this attribute.
-        self.distance = distance
-        self.velocity = velocity
+        self.distance = float(distance)
+        self.velocity = float(velocity)
 
         # Create an attribute for the referenced NEO, originally None.
         self.neo = neo
@@ -145,6 +143,7 @@ class CloseApproach:
         new_time = datetime_to_str(self.time)
         # TODO: Use self.designation and self.name to build a fullname for this object.
         return new_time
+
 
     def __str__(self):
         """Return `str(self)`."""
