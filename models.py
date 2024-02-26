@@ -47,7 +47,7 @@ class NearEarthObject:
         self.designation = designation
         self.name = None if len(name) <= 0 else name
         self.diameter = float('nan') if len(diameter) <= 0 else float(diameter)
-        self.hazardous = False if hazardous is 'N' or len(hazardous) <= 0 else True
+        self.hazardous = False if hazardous == 'N' or len(hazardous) <= 0 else True
 
         # Create an empty initial collection of linked approaches.
         self.approaches = []
@@ -81,7 +81,7 @@ class NearEarthObject:
             hazardous_string = "is not a threat"
 
         return f"{name_string}, has the designation of {self.designation}, {diam_string},"\
-               f"and {hazardous_string} with an orbital ID of {self.orbit_id}"
+               f"and {hazardous_string}"
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
@@ -151,7 +151,7 @@ class CloseApproach:
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
         return f"CloseApproach(time={self.time_str!r}, distance={self.distance}, " \
-               f"velocity={self.velocity}, neo={self.neo!r}), orbit_id={self.orbit_id}"
+               f"velocity={self.velocity}, neo={self.neo!r})"
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
