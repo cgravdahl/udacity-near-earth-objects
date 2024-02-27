@@ -11,7 +11,11 @@ data on NEOs and close approaches extracted by `extract.load_neos` and
 
 You'll edit this file in Tasks 2 and 3.
 """
-from functools import lru_cache
+from functools import lru_cache,cache
+
+from models import NearEarthObject
+
+
 class NEODatabase:
     """A database of near-Earth objects and their close approaches.
 
@@ -40,34 +44,61 @@ class NEODatabase:
         """
         self._neos = neos
         self._approaches = approaches
+        self._used_approaches = []
+        self._unused_approaches = []
 
 
         # TODO: What additional auxiliary data structures will be useful?
         @lru_cache(maxsize=None)
-        def find_near_earth(neo):
-            print([neo.designation for neo in self._neos])
-            return [f'{neo.designation}' in self._neos]
+
+
 
         # TODO: Link together the NEOs and their close approaches.
-        @lru_cache(maxsize=None)
+        @cache
         def check_approaches(neo):
+            used_approaches = set()
             # print(neo.designation, approach._designation)
-            for approach in self._approaches:
-                if neo.designation == approach._designation:
-                    if neo.name is None:
+            linked_approaches = []
+            count = 0
+            if len(self._used_approaches) <= 0:
+                for approach in approaches:
+                    if neo.designation == approach._designation:
                         approach.neo = neo.designation
+                        self._used_approaches.append(approach)
+                        linked_approaches.append(approach)
+
                     else:
-                        approach.neo = neo.name
-                    return approach
+
+                        self._unused_approaches.append(approach)
+            else:
+                for approach in self._unused_approaches:
+                    if neo.designation == approach._designation:
+                        approach.neo = neo.designation
+                        self._used_approaches.append(approach)
+                        self._unused_approaches.remove(approach)
+                        linked_approaches.append(approach)
+                        count += 1
+
+            # print(count,len(self._used_approaches))
+            return linked_approaches
+
                 #
                 # print(neo, approach)
         def set_approaches():
             # print([neo.designation for neo in self._neos])
+            # for approach in approaches:
+            #     for neo in neos:
+            #         if neo.designation == approach._designation:
+            #             approach.neo = neo.designation
+            #             neo.approaches.append(approach)
             for neo in neos:
                 # neo.approaches = [approache for approache in self._approaches if approache._designation == neo.designation]
-                neo.approaches.append(check_approaches(neo))
+                neo.approaches = check_approaches(neo)
+                # print(check_approaches.cache_info())
                 # for approach in approaches:
-                #     check_approaches(approach,neo)
+                #     if approach._designation == neo.designation:
+                #         neo.approaches.append(approach)
+                #         approach.neos = neo
                 # print(neo.orbit_id)
                 # get_approaches(neo)
                 # print(neo.name,neo.approaches)
@@ -88,9 +119,10 @@ class NEODatabase:
         :return: The `NearEarthObject` with the desired primary designation, or `None`.
         """
         # TODO: Fetch an NEO by its primary designation.
-        # if self._neos.designation == designation:
-        #
-        #     return None
+        for neo in self._neos:
+            if neo.designation == designation or neo.designation.lower() == designation.lower():
+                return neo
+
 
     def get_neo_by_name(self, name):
         """Find and return an NEO by its name.
@@ -107,7 +139,9 @@ class NEODatabase:
         :return: The `NearEarthObject` with the desired name, or `None`.
         """
         # TODO: Fetch an NEO by its name.
-        return None
+        for neo in self._neos:
+            if neo.name == name or neo.designation.lower() == name.lower():
+                return neo
 
     def query(self, filters=()):
         """Query close approaches to generate those that match a collection of filters.
