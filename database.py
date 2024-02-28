@@ -11,8 +11,9 @@ data on NEOs and close approaches extracted by `extract.load_neos` and
 
 You'll edit this file in Tasks 2 and 3.
 """
-from functools import lru_cache,cache
+from functools import lru_cache,cache,reduce
 import time
+import re
 
 from models import NearEarthObject
 
@@ -54,10 +55,12 @@ class NEODatabase:
         @cache
         def get_neo(approach):
             for neo in neos:
+                # if neo.fullname is not self.neo_set:
+                #     self.neo_set[neo.fullname] = neo
                 if neo.designation == approach._designation:
                     approach.neo = neo.designation
                     neo.approaches.append(approach)
-                    self.neo_set[neo.designation] = neo
+                    self.neo_set[neo.fullname] = neo
                     # if neo.designation in self.neo_set:
                     #     self.neo_set[neo.designation][neo.approaches].append(approach)
                     # else:
@@ -94,6 +97,7 @@ class NEODatabase:
         :return: The `NearEarthObject` with the desired primary designation, or `None`.
         """
         # TODO: Fetch an NEO by its primary designation.
+        print(self.neo_set[designation],designation)
         if designation in self.neo_set:
             return self.neo_set[designation]
         else:
@@ -116,9 +120,11 @@ class NEODatabase:
         :return: The `NearEarthObject` with the desired name, or `None`.
         """
         # TODO: Fetch an NEO by its name.
-        for neo in self._neos:
-            if neo.name == name or neo.designation.lower() == name.lower():
-                return neo
+        values = [val for key, val in self.neo_set.items() if re.search(name.lower(), key.lower())]
+        if any(name in key for key in self.neo_set.keys()):
+            return values[0]
+        else:
+            return None
 
     def query(self, filters=()):
         """Query close approaches to generate those that match a collection of filters.
