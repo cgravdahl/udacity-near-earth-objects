@@ -44,64 +44,28 @@ class NEODatabase:
         """
         self._neos = neos
         self._approaches = approaches
-        self._used_approaches = []
-        self._unused_approaches = []
+        self.neo_set = {}
 
 
         # TODO: What additional auxiliary data structures will be useful?
-        @lru_cache(maxsize=None)
-
-
 
         # TODO: Link together the NEOs and their close approaches.
         @cache
-        def check_approaches(neo):
-            used_approaches = set()
-            # print(neo.designation, approach._designation)
-            linked_approaches = []
-            count = 0
-            if len(self._used_approaches) <= 0:
-                for approach in approaches:
-                    if neo.designation == approach._designation:
-                        approach.neo = neo.designation
-                        self._used_approaches.append(approach)
-                        linked_approaches.append(approach)
-
-                    else:
-
-                        self._unused_approaches.append(approach)
-            else:
-                for approach in self._unused_approaches:
-                    if neo.designation == approach._designation:
-                        approach.neo = neo.designation
-                        self._used_approaches.append(approach)
-                        self._unused_approaches.remove(approach)
-                        linked_approaches.append(approach)
-                        count += 1
-
-            # print(count,len(self._used_approaches))
-            return linked_approaches
-
-                #
-                # print(neo, approach)
-        def set_approaches():
-            # print([neo.designation for neo in self._neos])
-            # for approach in approaches:
-            #     for neo in neos:
-            #         if neo.designation == approach._designation:
-            #             approach.neo = neo.designation
-            #             neo.approaches.append(approach)
+        def get_neo(approach):
             for neo in neos:
-                # neo.approaches = [approache for approache in self._approaches if approache._designation == neo.designation]
-                neo.approaches = check_approaches(neo)
-                # print(check_approaches.cache_info())
-                # for approach in approaches:
-                #     if approach._designation == neo.designation:
-                #         neo.approaches.append(approach)
-                #         approach.neos = neo
-                # print(neo.orbit_id)
-                # get_approaches(neo)
-                # print(neo.name,neo.approaches)
+                if neo.designation == approach._designation:
+                    approach.neo = neo.designation
+                    neo.approaches.append(approach)
+                    # if neo.designation in self.neo_set:
+                    #     self.neo_set[neo.designation]['approaches'].append(vars(approach))
+                    # else:
+                    #     self.neo_set[neo.designation] = vars(neo)
+                    return neo.designation
+
+        def set_approaches():
+            for approach in approaches:
+                approach.neo = get_neo(approach)
+            print(self.neo_set)
         set_approaches()
 
 
