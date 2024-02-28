@@ -12,6 +12,7 @@ data on NEOs and close approaches extracted by `extract.load_neos` and
 You'll edit this file in Tasks 2 and 3.
 """
 from functools import lru_cache,cache
+import time
 
 from models import NearEarthObject
 
@@ -71,8 +72,11 @@ class NEODatabase:
                     return neo.designation
 
         def set_approaches():
+            start = time.time()
             for approach in approaches:
                 approach.neo = get_neo(approach)
+            end = time.time()
+            print(end - start)
         set_approaches()
 
 
