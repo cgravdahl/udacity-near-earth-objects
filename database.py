@@ -56,16 +56,23 @@ class NEODatabase:
                 if neo.designation == approach._designation:
                     approach.neo = neo.designation
                     neo.approaches.append(approach)
+                    self.neo_set[neo.designation] = neo
                     # if neo.designation in self.neo_set:
-                    #     self.neo_set[neo.designation]['approaches'].append(vars(approach))
+                    #     self.neo_set[neo.designation][neo.approaches].append(approach)
                     # else:
-                    #     self.neo_set[neo.designation] = vars(neo)
+                    #
+                    #     # self.neo_set[neo.designation] = {
+                    #     #     'diameter': neo.diameter,
+                    #     #     'hazardous': neo.hazardous,
+                    #     #     'approaches': [approach.__str__()]
+                    #     # }
+                    #     # if neo.name:
+                    #     #     self.neo_set[neo.designation]['name'] = neo.name
                     return neo.designation
 
         def set_approaches():
             for approach in approaches:
                 approach.neo = get_neo(approach)
-            print(self.neo_set)
         set_approaches()
 
 
@@ -83,9 +90,11 @@ class NEODatabase:
         :return: The `NearEarthObject` with the desired primary designation, or `None`.
         """
         # TODO: Fetch an NEO by its primary designation.
-        for neo in self._neos:
-            if neo.designation == designation or neo.designation.lower() == designation.lower():
-                return neo
+        if designation in self.neo_set:
+            return self.neo_set[designation]
+        else:
+            return None
+        # return self.neo_set[designation]
 
 
     def get_neo_by_name(self, name):
