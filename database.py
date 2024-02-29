@@ -46,42 +46,55 @@ class NEODatabase:
         """
         self._neos = neos
         self._approaches = approaches
-        self.neo_set = {}
+        self.neo_dict = {}
+        self.approaches_dict = {}
 
 
         # TODO: What additional auxiliary data structures will be useful?
 
         # TODO: Link together the NEOs and their close approaches.
-        @cache
-        def get_neo(approach):
-            for neo in neos:
-                # if neo.fullname is not self.neo_set:
-                #     self.neo_set[neo.fullname] = neo
-                if neo.designation == approach._designation:
-                    approach.neo = neo.designation
-                    neo.approaches.append(approach)
-                    self.neo_set[neo.fullname] = neo
-                    # if neo.designation in self.neo_set:
-                    #     self.neo_set[neo.designation][neo.approaches].append(approach)
-                    # else:
-                    #
-                    #     # self.neo_set[neo.designation] = {
-                    #     #     'diameter': neo.diameter,
-                    #     #     'hazardous': neo.hazardous,
-                    #     #     'approaches': [approach.__str__()]
-                    #     # }
-                    #     # if neo.name:
-                    #     #     self.neo_set[neo.designation]['name'] = neo.name
-                    return neo.designation
+
+
+
 
         def set_approaches():
             start = time.time()
-            for approach in approaches:
-                approach.neo = get_neo(approach)
+            self.approaches_dict = self.get_approaches()
             end = time.time()
             print(end - start)
+
         set_approaches()
 
+    @cache
+    def get_neo(self,approach):
+        cache_neos = {}
+        for neo in self._neos:
+            # if neo.fullname is not self.neo_set:
+            #     self.neo_set[neo.fullname] = neo
+            if neo.designation == approach._designation:
+                approach.neo = neo.fullname
+                neo.approaches.append(approach)
+                cache_neos[neo.fullname] = neo
+                # if neo.designation in self.neo_set:
+                #     self.neo_set[neo.designation][neo.approaches].append(approach)
+                # else:
+                #
+                #     # self.neo_set[neo.designation] = {
+                #     #     'diameter': neo.diameter,
+                #     #     'hazardous': neo.hazardous,
+                #     #     'approaches': [approach.__str__()]
+                #     # }
+                #     # if neo.name:
+                #     #     self.neo_set[neo.designation]['name'] = neo.name
+                return cache_neos
+    @cache
+    def get_approaches(self,**kwargs):
+        cache_approaches = {}
+        if len(kwargs) == 0:
+            for approach in self._approaches:
+                self.neo_dict.update(self.get_neo(approach))
+                cache_approaches[approach.neo] = approach
+            return cache_approaches
 
     def get_neo_by_designation(self, designation):
         """Find and return an NEO by its primary designation.
@@ -97,11 +110,16 @@ class NEODatabase:
         :return: The `NearEarthObject` with the desired primary designation, or `None`.
         """
         # TODO: Fetch an NEO by its primary designation.
-        print(self.neo_set[designation],designation)
-        if designation in self.neo_set:
-            return self.neo_set[designation]
-        else:
-            return None
+        # print(self.neo_dict[designation], designation)
+        values = [val for key, val in self.neo_dict.items() if re.search(designation.lower(), key.lower())]
+        if any(designation in key for key in self.neo_dict.keys()):
+            for value in values:
+                if value.designation.lower() == designation.lower():
+                    return value
+        # if designation in self.neo_dict:
+        #     return self.neo_dict[designation]
+        # else:
+        #     return None
         # return self.neo_set[designation]
 
 
@@ -120,9 +138,12 @@ class NEODatabase:
         :return: The `NearEarthObject` with the desired name, or `None`.
         """
         # TODO: Fetch an NEO by its name.
-        values = [val for key, val in self.neo_set.items() if re.search(name.lower(), key.lower())]
-        if any(name in key for key in self.neo_set.keys()):
-            return values[0]
+        values = [val for key, val in self.neo_dict.items() if re.search(name.lower(), key.lower())]
+        if any(name in key for key in self.neo_dict.keys()):
+            for value in values:
+                if value.name.lower() == name.lower():
+                    return value
+            # return values[0]
         else:
             return None
 
