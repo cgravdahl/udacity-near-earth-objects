@@ -147,7 +147,7 @@ class NEODatabase:
         else:
             return None
 
-    def query(self, filters=()):
+    def query(self, filters=[]):
         """Query close approaches to generate those that match a collection of filters.
 
         This generates a stream of `CloseApproach` objects that match all of the
@@ -162,5 +162,20 @@ class NEODatabase:
         :return: A stream of matching `CloseApproach` objects.
         """
         # TODO: Generate `CloseApproach` objects that match all of the filters.
+        asked_filters = []
+        filtered_results =[]
+        for asked_filter in filters:
+            if asked_filter.value:
+                asked_filters.append(asked_filter)
         for approach in self._approaches:
-            yield approach
+            if len(asked_filters) >= 1:
+                for asked_filter in asked_filters:
+                    if asked_filter(approach):
+                        filtered_results.append(approach)
+                    else:
+                        filtered_results = []
+                if len(filtered_results) == len(asked_filters):
+                    # print(filtered_results, asked_filters)
+                    yield approach
+            else:
+                yield approach

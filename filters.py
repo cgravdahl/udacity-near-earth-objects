@@ -17,6 +17,7 @@ iterator.
 You'll edit this file in Tasks 3a and 3c.
 """
 import operator
+from datetime import datetime
 
 
 class UnsupportedCriterionError(NotImplementedError):
@@ -71,7 +72,43 @@ class AttributeFilter:
     def __repr__(self):
         return f"{self.__class__.__name__}(op=operator.{self.op.__name__}, value={self.value})"
 
+class TimeFilter(AttributeFilter):
+    def __init__(self, op, value):
+        super().__init__(op, value)
+    def __call__(self, approach):
+        """Invoke `self(approach)`."""
+        return self.op(self.get(approach), self.value)
+    @classmethod
+    def get(cls, value):
+        return value.time.date()
 
+class DistanceFilter(AttributeFilter):
+    def __init__(self, op, value):
+        super().__init__(op, value)
+    @classmethod
+    def get(cls, value):
+        return value.distance
+
+class VelocityFilter(AttributeFilter):
+    def __init__(self, op, value):
+        super().__init__(op, value)
+    @classmethod
+    def get(cls, value):
+        return value.velocity
+
+class DiameterFilter(AttributeFilter):
+    def __init__(self, op, value):
+        super().__init__(op, value)
+    @classmethod
+    def get(cls, value):
+        return value.neo.diameter
+
+class HazFilter(AttributeFilter):
+    def __init__(self, op, value):
+        super().__init__(op, value)
+    @classmethod
+    def get(cls, value):
+        return value.neo.hazardous
 def create_filters(
         date=None, start_date=None, end_date=None,
         distance_min=None, distance_max=None,
@@ -109,7 +146,13 @@ def create_filters(
     :return: A collection of filters for use with `query`.
     """
     # TODO: Decide how you will represent your filters.
-    return ()
+    filters = [TimeFilter(operator.eq, date), TimeFilter(operator.ge, start_date),
+               TimeFilter(operator.le, end_date), DistanceFilter(operator.ge, distance_min),
+               DistanceFilter(operator.le, distance_max), VelocityFilter(operator.ge, velocity_min),
+               VelocityFilter(operator.le, velocity_max), DiameterFilter(operator.ge, diameter_min),
+               DiameterFilter(operator.le, diameter_max), HazFilter(operator.eq, hazardous)]
+
+    return filters
 
 
 def limit(iterator, n=None):
