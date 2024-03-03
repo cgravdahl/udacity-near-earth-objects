@@ -75,9 +75,9 @@ class AttributeFilter:
 class TimeFilter(AttributeFilter):
     def __init__(self, op, value):
         super().__init__(op, value)
-    def __call__(self, approach):
-        """Invoke `self(approach)`."""
-        return self.op(self.get(approach), self.value)
+    # def __call__(self, approach):
+    #     """Invoke `self(approach)`."""
+    #     return self.op(self.get(approach), self.value)
     @classmethod
     def get(cls, value):
         return value.time.date()
@@ -150,7 +150,8 @@ def create_filters(
                TimeFilter(operator.le, end_date), DistanceFilter(operator.ge, distance_min),
                DistanceFilter(operator.le, distance_max), VelocityFilter(operator.ge, velocity_min),
                VelocityFilter(operator.le, velocity_max), DiameterFilter(operator.ge, diameter_min),
-               DiameterFilter(operator.le, diameter_max), HazFilter(operator.eq, hazardous)]
+               DiameterFilter(operator.le, diameter_max),HazFilter(operator.eq, hazardous)]
+
 
     return filters
 

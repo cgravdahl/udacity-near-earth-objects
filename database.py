@@ -72,7 +72,7 @@ class NEODatabase:
             # if neo.fullname is not self.neo_set:
             #     self.neo_set[neo.fullname] = neo
             if neo.designation == approach._designation:
-                approach.neo = neo.fullname
+                approach.neo = neo
                 neo.approaches.append(approach)
                 cache_neos[neo.fullname] = neo
                 # if neo.designation in self.neo_set:
@@ -147,7 +147,7 @@ class NEODatabase:
         else:
             return None
 
-    def query(self, filters=[]):
+    def query(self, filters=()):
         """Query close approaches to generate those that match a collection of filters.
 
         This generates a stream of `CloseApproach` objects that match all of the
@@ -163,11 +163,11 @@ class NEODatabase:
         """
         # TODO: Generate `CloseApproach` objects that match all of the filters.
         asked_filters = []
-        filtered_results =[]
         for asked_filter in filters:
-            if asked_filter.value:
+            if asked_filter.value is not None:
                 asked_filters.append(asked_filter)
         for approach in self._approaches:
+            filtered_results = []
             if len(asked_filters) >= 1:
                 for asked_filter in asked_filters:
                     if asked_filter(approach):
@@ -175,7 +175,6 @@ class NEODatabase:
                     else:
                         filtered_results = []
                 if len(filtered_results) == len(asked_filters):
-                    # print(filtered_results, asked_filters)
                     yield approach
             else:
                 yield approach
