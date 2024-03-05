@@ -73,12 +73,12 @@ class AttributeFilter:
     def __repr__(self):
         return f"{self.__class__.__name__}(op=operator.{self.op.__name__}, value={self.value})"
 
+"""Class methods that are leveraged the filter method. 
+        There may be a chance to refactor and clean this up
+"""
 class TimeFilter(AttributeFilter):
     def __init__(self, op, value):
         super().__init__(op, value)
-    # def __call__(self, approach):
-    #     """Invoke `self(approach)`."""
-    #     return self.op(self.get(approach), self.value)
     @classmethod
     def get(cls, value):
         return value.time.date()
@@ -146,7 +146,6 @@ def create_filters(
     :param hazardous: Whether the NEO of a matching `CloseApproach` is potentially hazardous.
     :return: A collection of filters for use with `query`.
     """
-    # TODO: Decide how you will represent your filters.
     filters = [TimeFilter(operator.eq, date), TimeFilter(operator.ge, start_date),
                TimeFilter(operator.le, end_date), DistanceFilter(operator.ge, distance_min),
                DistanceFilter(operator.le, distance_max), VelocityFilter(operator.ge, velocity_min),
@@ -166,14 +165,12 @@ def limit(iterator, n=None):
     :param n: The maximum number of values to produce.
     :yield: The first (at most) `n` values from the iterator.
     """
-    # TODO: Produce at most `n` values from the given iterator.
-    print('here',n)
-    return itertools.islice(iterator, n)
-    # if n is None or 0:
-    #     yield iterator
-    # else:
-    #     count = 0
-    #     for i in iterator:
-    #         count += 1
-    #         if count <= n:
-    #             yield i
+    if n is None:
+        # if len(iterator):
+        #     return itertools.islice(iterator, 0, len(iterator))
+        # else:
+        return iterator
+    elif n == 0:
+        return iterator
+    else:
+        return itertools.islice(iterator, n)
