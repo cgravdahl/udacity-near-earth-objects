@@ -17,6 +17,7 @@ iterator.
 You'll edit this file in Tasks 3a and 3c.
 """
 import operator
+import itertools
 from datetime import datetime
 
 
@@ -166,4 +167,13 @@ def limit(iterator, n=None):
     :yield: The first (at most) `n` values from the iterator.
     """
     # TODO: Produce at most `n` values from the given iterator.
-    return iterator
+    print('here',n)
+    return itertools.islice(iterator, n)
+    # if n is None or 0:
+    #     yield iterator
+    # else:
+    #     count = 0
+    #     for i in iterator:
+    #         count += 1
+    #         if count <= n:
+    #             yield i
