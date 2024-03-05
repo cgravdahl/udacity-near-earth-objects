@@ -15,12 +15,9 @@ from functools import cache
 
 import re
 
-from models import NearEarthObject
-
 
 class NEODatabase:
     """A database of near-Earth objects and their close approaches.
-
     A `NEODatabase` contains a collection of NEOs and a collection of close
     approaches. It additionally maintains a few auxiliary data structures to
     help fetch NEOs by primary designation or by name and to help speed up
@@ -48,20 +45,16 @@ class NEODatabase:
         self._approaches = approaches
         self.neo_dict = {}
         self.approaches_dict = {}
-
-
         """Tried to get a better understanding of caching for Python, leveraged Dicts to cache
          inspect get methods. There can be improvements to get_neo and get approaches. With a refactor could
          be leveraged elsewhere as well. 
          """
-
-
         def set_approaches():
             self.approaches_dict = self.get_approaches()
         set_approaches()
 
     @cache
-    def get_neo(self,approach):
+    def get_neo(self, approach):
         cache_neos = {}
         for neo in self._neos:
             if neo.designation == approach._designation:
@@ -69,8 +62,9 @@ class NEODatabase:
                 neo.approaches.append(approach)
                 cache_neos[neo.fullname] = neo
                 return cache_neos
+
     @cache
-    def get_approaches(self,**kwargs):
+    def get_approaches(self, **kwargs):
         cache_approaches = {}
         if len(kwargs) == 0:
             for approach in self._approaches:
@@ -97,7 +91,6 @@ class NEODatabase:
             for value in values:
                 if value.designation.lower() == designation.lower():
                     return value
-
 
     def get_neo_by_name(self, name):
         """Find and return an NEO by its name.
