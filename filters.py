@@ -18,7 +18,6 @@ You'll edit this file in Tasks 3a and 3c.
 """
 import operator
 import itertools
-from datetime import datetime
 
 
 class UnsupportedCriterionError(NotImplementedError):
@@ -40,6 +39,7 @@ class AttributeFilter:
     Concrete subclasses can override the `get` classmethod to provide custom
     behavior to fetch a desired attribute from the given `CloseApproach`.
     """
+
     def __init__(self, op, value):
         """Construct a new `AttributeFilter` from an binary predicate and a reference value.
 
@@ -71,45 +71,78 @@ class AttributeFilter:
         raise UnsupportedCriterionError
 
     def __repr__(self):
+        """Class methods that are leveraged the filter method.
+
+        There may be a chance to refactor and clean this up.
+        """
         return f"{self.__class__.__name__}(op=operator.{self.op.__name__}, value={self.value})"
 
-"""Class methods that are leveraged the filter method. 
-        There may be a chance to refactor and clean this up
-"""
+
 class TimeFilter(AttributeFilter):
+    """Time filter that handles time-based filtering."""
+
     def __init__(self, op, value):
+        """Initialize the super class for time filter, takes operator and value."""
         super().__init__(op, value)
+
     @classmethod
     def get(cls, value):
+        """Return a date from the date time object."""
         return value.time.date()
 
+
 class DistanceFilter(AttributeFilter):
+    """Distance filter that handles distance-based filtering."""
+
     def __init__(self, op, value):
+        """Initialize the super class for distance filter, takes operator and value."""
         super().__init__(op, value)
+
     @classmethod
     def get(cls, value):
+        """Return distance from the approach class."""
         return value.distance
 
+
 class VelocityFilter(AttributeFilter):
+    """Velocity filter that handles velocity-based filtering."""
+
     def __init__(self, op, value):
+        """Initialize the super class for velocity filter, takes operator and value."""
         super().__init__(op, value)
+
     @classmethod
     def get(cls, value):
+        """Return velocity from the approach class."""
         return value.velocity
 
+
 class DiameterFilter(AttributeFilter):
+    """Diameter filter that handles diameter-based filtering."""
+
     def __init__(self, op, value):
+        """Initialize the super class for diameter filter, takes operator and value."""
         super().__init__(op, value)
+
     @classmethod
     def get(cls, value):
+        """Return diameter from the neo class."""
         return value.neo.diameter
 
+
 class HazFilter(AttributeFilter):
+    """Haz filter that handles hazard-based filtering, takes true/false values."""
+
     def __init__(self, op, value):
+        """Initialize the super class for hazardous filter, takes operator and value."""
         super().__init__(op, value)
+
     @classmethod
     def get(cls, value):
+        """Return hazard boolean from the neo class."""
         return value.neo.hazardous
+
+
 def create_filters(
         date=None, start_date=None, end_date=None,
         distance_min=None, distance_max=None,
@@ -146,13 +179,27 @@ def create_filters(
     :param hazardous: Whether the NEO of a matching `CloseApproach` is potentially hazardous.
     :return: A collection of filters for use with `query`.
     """
-    filters = [TimeFilter(operator.eq, date), TimeFilter(operator.ge, start_date),
-               TimeFilter(operator.le, end_date), DistanceFilter(operator.ge, distance_min),
-               DistanceFilter(operator.le, distance_max), VelocityFilter(operator.ge, velocity_min),
-               VelocityFilter(operator.le, velocity_max), DiameterFilter(operator.ge, diameter_min),
-               DiameterFilter(operator.le, diameter_max),HazFilter(operator.eq, hazardous)]
-
-
+    filters = []
+    if date is not None:
+        filters.append(TimeFilter(operator.eq, date))
+    if start_date is not None:
+        filters.append(TimeFilter(operator.ge, start_date))
+    if end_date is not None:
+        filters.append(TimeFilter(operator.le, end_date))
+    if distance_min is not None:
+        filters.append((DistanceFilter(operator.ge, distance_min)))
+    if distance_max is not None:
+        filters.append(DistanceFilter(operator.le, distance_max))
+    if velocity_min is not None:
+        filters.append(VelocityFilter(operator.ge, velocity_min))
+    if velocity_max is not None:
+        filters.append(VelocityFilter(operator.le, velocity_max))
+    if diameter_min is not None:
+        filters.append(DiameterFilter(operator.ge, diameter_min))
+    if diameter_max is not None:
+        filters.append(DiameterFilter(operator.le, diameter_max))
+    if hazardous is not None:
+        filters.append(HazFilter(operator.eq, hazardous))
     return filters
 
 

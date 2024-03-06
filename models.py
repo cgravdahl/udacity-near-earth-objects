@@ -32,16 +32,17 @@ class NearEarthObject:
     initialized to an empty collection, but eventually populated in the
     `NEODatabase` constructor.
     """
+
     # If you make changes, be sure to update the comments in this file.
     def __init__(self, name, designation, hazardous, diameter):
         """Create a new `NearEarthObject`.
 
         :param info: A dictionary of excess keyword arguments supplied to the constructor.
+        onto attributes named `designation`, `name`, `diameter`, and `hazardous`.
+        You should coerce these values to their appropriate data type and
+        handle any edge cases, such as a empty name being represented by `None`
+        and a missing diameter being represented by `float('nan')`.
         """
-        # onto attributes named `designation`, `name`, `diameter`, and `hazardous`.
-        # You should coerce these values to their appropriate data type and
-        # handle any edge cases, such as a empty name being represented by `None`
-        # and a missing diameter being represented by `float('nan')`.
         self.designation = designation
         self.name = None if len(name) <= 0 else name
         self.diameter = float('nan') if len(diameter) <= 0 else float(diameter)
@@ -53,7 +54,6 @@ class NearEarthObject:
     @property
     def fullname(self):
         """Return a representation of the full name of this NEO."""
-
         if self.name is not None:
             return f'{self.name} {self.designation}'
         else:
@@ -61,12 +61,10 @@ class NearEarthObject:
 
     def __str__(self):
         """Return `str(self)`.
+
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
         """
-        name_string = ""
-        diam_string = ""
-        hazardous_string = ""
         if self.name == " ":
             name_string = "A NearEarthObject has no name"
         else:
@@ -80,18 +78,13 @@ class NearEarthObject:
         else:
             hazardous_string = "is not a threat"
 
-        return f"{name_string}, has the designation of {self.designation}, {diam_string},"\
+        return f"{name_string}, has the designation of {self.designation}, {diam_string}," \
                f"and {hazardous_string}"
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
         return f"NearEarthObject(designation={self.designation!r}, name={self.name!r}, " \
                f"diameter={self.diameter:.3f}, hazardous={self.hazardous!r})"
-
-
-    # @fullname.setter
-    # def fullname(self, name):
-    #     self.fullname = f'{name} {self.designation}'
 
 
 class CloseApproach:
@@ -107,8 +100,9 @@ class CloseApproach:
     private attribute, but the referenced NEO is eventually replaced in the
     `NEODatabase` constructor.
     """
+
     # If you make changes, be sure to update the comments in this file.
-    def __init__(self, designation,time,distance,velocity,neo = None):
+    def __init__(self, designation, time, distance, velocity, neo=None):
         """Create a new `CloseApproach`.
 
         :param info: A dictionary of excess keyword arguments supplied to the constructor.
@@ -145,21 +139,21 @@ class CloseApproach:
         # The project instructions include one possibility. Peek at the __repr__
         # method for examples of advanced string formatting.
         return f"On {self.time_str!r},{self.neo.fullname!r} approaches Earth" \
-        f" at a distance of {self.distance:.2f} au and a velocity" \
-        f" of {self.velocity:.2f} km/s"
+               f" at a distance of {self.distance:.2f} au and a velocity" \
+               f" of {self.velocity:.2f} km/s"
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
         return f"CloseApproach(time={self.time_str!r}, distance={self.distance:.2f}, " \
                f"velocity={self.velocity:.2f}, neo={self.neo.fullname!r})"
 
-    def serialize(self,type):
-        """Converting objects into a serializable data form for JSON and CSV."""
-        if(type == 'csv'):
-            return {'datetime_utc': self.time_str,'distance_au': self.distance,'velocity_km_s': self.velocity,
-                'designation': self.neo.designation,'name': self.neo.name if self.neo.name else " ",
-                'diameter_km': self.neo.diameter,'potentially_hazardous': self.neo.hazardous}
-        if(type == 'json'):
-            return {'datetime_utc': self.time_str,'distance_au': self.distance,'velocity_km_s': self.velocity,
-                    'neo': {'designation': self.neo.designation,'name': self.neo.name if self.neo.name else " ",
-                            'diameter_km': self.neo.diameter,'potentially_hazardous': self.neo.hazardous}}
+    def serialize(self, type):
+        """Convert objects into a serializable data form for JSON and CSV."""
+        if (type == 'csv'):
+            return {'datetime_utc': self.time_str, 'distance_au': self.distance, 'velocity_km_s': self.velocity,
+                    'designation': self.neo.designation, 'name': self.neo.name if self.neo.name else " ",
+                    'diameter_km': self.neo.diameter, 'potentially_hazardous': self.neo.hazardous}
+        if (type == 'json'):
+            return {'datetime_utc': self.time_str, 'distance_au': self.distance, 'velocity_km_s': self.velocity,
+                    'neo': {'designation': self.neo.designation, 'name': self.neo.name if self.neo.name else " ",
+                            'diameter_km': self.neo.diameter, 'potentially_hazardous': self.neo.hazardous}}
